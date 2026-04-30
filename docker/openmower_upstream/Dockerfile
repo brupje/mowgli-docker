@@ -1,5 +1,5 @@
 ## Build from the official upstream OpenMower repository image
-FROM ghcr.io/clemenselflein/open_mower_ros:latest
+FROM ghcr.io/brupje/open_mower_ros:sha-d9a0f38
 
 # Upstream image runs as non-root, switch to root for setup
 USER root
