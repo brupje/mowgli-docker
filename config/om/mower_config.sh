@@ -119,7 +119,7 @@ export OM_WHEEL_DISTANCE_M=0.325
 export OM_WHEEL_TICKS_PER_M=300.0
 
 # Heatmap UNSET or om_gps_accuracy
-export OM_HEATMAP_SENSOR_IDS=om_gps_accuracy
+export OM_HEATMAP_SENSOR_IDS=UNSET
 
 ################################
 ##    External MQTT Broker    ##
@@ -133,4 +133,3 @@ export OM_HEATMAP_SENSOR_IDS=om_gps_accuracy
 # export OM_MQTT_USER=""
 # export OM_MQTT_PASSWORD=""
 # export OM_MQTT_TOPIC_PREFIX="openmower"
-
