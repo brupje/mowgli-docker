@@ -1,0 +1,116 @@
+# Custom-robot params. In CUSTOM mode, open_mower's _params.launch loads ONLY this
+# file (PARAMS_PATH/custom_params.yaml), and it loads it last. So the keys below
+# override the image defaults on a key-by-key basis.
+
+# Yardforce500 + Mowlgi specific tuning of the PIDs
+move_base_flex:
+  FTCPlanner:
+    kd_ang: 0.5
+    kd_lat: 2.2
+    kd_lon: 0.5
+    ki_ang: 0.0
+    ki_ang_max: 62.0
+    ki_lat: 0.03
+    ki_lat_max: 20.0
+    ki_lon: 0.0
+    ki_lon_max: 10.0
+    kp_ang: 1.4
+    kp_lat: 4.7
+    kp_lon: 1.5
+    max_cmd_vel_ang: 3.2
+    max_cmd_vel_speed: 0.4
+    max_follow_distance: 0.8
+    speed_angular: 40.0
+    speed_fast: 0.3
+    speed_fast_threshold: 0.3
+    speed_fast_threshold_angle: 5.0
+
+  DockingFTCPlanner:
+    kd_ang: 0.5
+    kd_lat: 2.2
+    kd_lon: 0.5
+    ki_ang: 0.0
+    ki_ang_max: 62.0
+    ki_lat: 0.0
+    ki_lat_max: 20.0
+    ki_lon: 0.0
+    ki_lon_max: 10.0
+    kp_ang: 1.4
+    kp_lat: 4.7
+    kp_lon: 1.5
+    acceleration: 0.05
+    max_cmd_vel_ang: 0.5
+    max_cmd_vel_speed: 0.2
+    max_goal_angle_error: 10.0
+    speed_angular: 15.0
+    speed_fast_threshold: 0.3
+
+ll:
+  services:
+    gps:
+      baudrate: 921600
+      serial_port: /dev/gps
+      device_type: serial
+      mode: absolute
+      protocol: UBX
+      datum_lat: 0 # PUT YOUR BASE STATION COORDINATES HERE
+      datum_long: 0
+      datum_height: 0
+    # Yardforce500 defaults
+    imu:
+      axis_config: "+X-Y-Z"
+    # Yardforce500 defaults
+    diff_drive:
+      ticks_per_m: 300
+      wheel_distance_m: 0.325
+    # Yardforce500 defaults
+    power:
+      battery_full_voltage: 28.5
+      battery_empty_voltage: 24.0
+      battery_critical_voltage: 23.0
+      battery_critical_high_voltage: 29.0
+      charge_critical_high_voltage: 30.0
+      charge_critical_high_current: 1.5
+
+# Yardforce500 defaults
+xbot_positioning:
+  antenna_offset_x: 0.3
+  antenna_offset_y: 0.0
+
+
+ntrip_client:
+  host: # PUT YOUR NTRIP CLIENT SETTINGS HERE
+  port:
+  username:
+  password:
+  mountpoint:
+  reconnect_attempt_max: 5
+  reconnect_attempt_wait_seconds: 99999
+
+mower_logic:
+  automatic_mode: 0
+  docking_approach_distance: 1.5
+  docking_extra_time: 0
+  docking_retry_count: 4
+  docking_redock: false
+  outline_overlap_count: 0
+  mow_angle_offset: 0
+  mow_angle_offset_is_absolute: false
+  mow_angle_increment: 0
+  gps_wait_time: 10.0
+  gps_timeout: 10.0
+  rain_mode: 0
+  rain_delay_minutes: 30
+  rain_check_seconds: 20
+  cu_rain_threshold: -1
+  undock_angled_distance: 0.0
+  undock_angle: 0.0
+  undock_fixed_angle: true
+  undock_use_curve: true
+  emergency_lift_period: -1
+  emergency_tilt_period: -1
+  ignore_charging_current: false
+
+
+xbot_monitoring:
+  external_mqtt_enable: false

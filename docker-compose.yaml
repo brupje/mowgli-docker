@@ -1,8 +1,11 @@
-version: '3'
+version: 3
 
 services:
   watchtower:
-    image: ghcr.io/nicholas-fedor/watchtower:latest
+    image: containrrr/watchtower
+    command:
+      - --api-version
+      - '1.40'
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -28,7 +31,8 @@ services:
       DOCKER_HOST: unix:///var/run/docker.sock
       DB_PATH: /db
     depends_on:
-      - roscore
+      roscore:
+        condition: service_healthy
     volumes:
       - /dev:/dev
       - ./config/db:/db
@@ -77,10 +81,16 @@ services:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
       ROSOUT_DISABLE_FILE_LOGGING: true
-    tmpfs: /root/.ros/log/
+    tmpfs:
+      - /home/openmower/.ros/log:uid=1000,gid=1000,mode=755
+    healthcheck:
+      test: ["CMD-SHELL", ". /opt/ros/noetic/setup.sh && rosnode list >/dev/null 2>&1"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 2s
     volumes:
-      - ./config/om:/config
-      - ./ros:/root/.ros/
+      - ./ros:/home/openmower/.ros/
       - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
 
@@ -102,22 +112,22 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
-      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config
-      ROSOUT_DISABLE_FILE_LOGGING: true
+      DEBUG: false
     command:
       - /opt/ros/noetic/bin/rosrun
       - rosserial_server
       - serial_node
       - _port:=/dev/mowgli
       - _baud:=115200
-    tmpfs: /root/.ros/log/
+    tmpfs:
+      - /home/openmower/.ros/log:uid=1000,gid=1000,mode=755
     volumes:
-      - ./ros:/root/.ros/
-      - ./config/om:/config
+      - ./ros:/home/openmower/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     depends_on:
-      - roscore
+      roscore:
+        condition: service_healthy
     restart: unless-stopped
 
   openmower:
@@ -138,19 +148,33 @@ services:
     environment:
       ROS_MASTER_URI: http://${ROS_IP}:11311
       ROS_IP: ${ROS_IP}
-      OM_HEATMAP_SENSOR_IDS: ""
-      OM_PARAMS_PATH: /opt/open_mower_ros/src/open_mower/params
-      OM_NO_COMMS: true #FALSE if you are using other board than mowgli
-      ROSCONSOLE_CONFIG_FILE: /config/rosconsole.config   # comment this line out to enable more logs
-      ROSOUT_DISABLE_FILE_LOGGING: true                   # comment this line out to enable more logs
-    tmpfs: /root/.ros/log                          # comment this line out to enable persistent logs
+      # Mowgli uses CUSTOM mower type meaning ALL params are loaded from custom_params.yaml and HARDWARE_PLATFORM/ESC_TYPE mean nothing.
+      MOWER: CUSTOM
+      ESC_TYPE: xesc_mini
+      HARDWARE_PLATFORM: "1"
+      PARAMS_PATH: /home/openmower/mower_params
+      OM_NO_COMMS: true
+      DEBUG: false
+    command:
+      - bash
+      - -c
+      - roslaunch --wait open_mower open_mower.launch --screen
+    tmpfs:
+      - /home/openmower/.ros/log:uid=1000,gid=1000,mode=755  # comment this line out to enable persistent logs
     volumes:
-      - ./config/om:/config
-      - ./mower_params:/root/mower_params:ro
-      - ./params:/opt/open_mower_ros/src/open_mower/params:ro
-      - ./ros:/root/.ros/
+      - ./mower_params:/home/openmower/mower_params:ro
+      - ./ros:/home/openmower/.ros/
       - /etc/timezone:/etc/timezone:ro
       - /dev:/dev
     depends_on:
-      - rosserial
+      roscore:
+        condition: service_healthy
+      rosserial:
+        condition: service_started
+    restart: unless-stopped
+  app:
+    image: ghcr.io/xtech/openmower-app:edge
+    container_name: app
+    ports:
+      - 3000:3000
     restart: unless-stopped
