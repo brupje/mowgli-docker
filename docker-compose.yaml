@@ -73,7 +73,11 @@ services:
     tty: true
     privileged: true
     command:
-      - /opt/ros/noetic/bin/roscore
+      # roscore runs as non-root (uid 1000); fix ownership of the bind-mounted
+      # ROS home (Docker creates ./ros as root)
+      - bash
+      - -c
+      - "sudo chown -R 1000:1000 /home/openmower/.ros && exec /opt/ros/noetic/bin/roscore"
     environment:
       ROS_IP: ${ROS_IP}
       ROS_MASTER_URI: http://${ROS_IP}:11311
