@@ -77,6 +77,15 @@ xbot_positioning:
   antenna_offset_x: 0.3
   antenna_offset_y: 0.0
 
+# This is for Pete_MI632's speed limiter, which is not yet part of upstream, but is in jeremysalwen's image
+# 3000 RPM is the minimal RPM we want for a Yardforce 500.  For other mowers you might want to change this value.
+mower_speed_limiter:
+  mow_erpm_limit: 3000
+
+# This is for Pete_MI632's map persistence feature, which is not yet part of upstream, but is in jeremysalwen's image
+map_service:
+  persist_mode: 3 # 0: Off 1: Special "persist" areas 2: Nav areas 3: Nav + Mow areas 4: Mow areas
+  persist_num_paths: 10
 
 ntrip_client:
   host: # PUT YOUR NTRIP CLIENT SETTINGS HERE
