@@ -102,7 +102,9 @@ mower_logic:
   docking_extra_time: 0
   docking_retry_count: 4
   docking_redock: false
-  outline_overlap_count: 0
+  outline_overlap_count: 2
+  outline_count: 0
+  outline_offset: 0.05
   mow_angle_offset: 0
   mow_angle_offset_is_absolute: false
   mow_angle_increment: 0
