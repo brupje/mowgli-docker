@@ -101,6 +101,7 @@ mower_logic:
   docking_approach_distance: 1.5
   docking_extra_time: 0
   docking_retry_count: 4
+  docking_min_voltage: 5.0
   docking_redock: false
   outline_overlap_count: 2
   outline_count: 0
